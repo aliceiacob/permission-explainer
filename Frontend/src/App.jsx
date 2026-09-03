@@ -91,25 +91,25 @@ function App() {
       <p>Paste permission text, or upload a screenshot, to see what an app's permissions actually mean.</p>
 
       <form onSubmit={handleSubmit}>
-        <textarea
-          rows={5}
-          placeholder="e.g. This app requires access to your Camera, Contacts, and Location"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-        <br />
+       <textarea
+         rows={5}
+         placeholder="e.g. This app requires access to your Camera, Contacts, and Location"
+         value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+     />
+
+      <div style={{ marginTop: '0.25rem', textAlign: 'center' }}>
+       <label>
+       Or upload a screenshot:{' '}
+        <input type="file" accept="image/*" onChange={handleImageUpload} />
+        </label>
+        {ocrLoading && <p>Reading text from image...</p>}
+      </div>
+
         <button type="submit" disabled={loading}>
           {loading ? 'Checking...' : 'Explain these permissions'}
         </button>
       </form>
-
-      <div style={{ marginTop: '1rem' }}>
-        <label>
-          Or upload a screenshot:{' '}
-          <input type="file" accept="image/*" onChange={handleImageUpload} />
-        </label>
-        {ocrLoading && <p>Reading text from image...</p>}
-      </div>
 
       {error && <p>Error: {error}</p>}
 
@@ -129,7 +129,7 @@ function App() {
       </div>
 
       <div style={{ marginTop: '2rem' }}>
-        <h2>Check where this app came from</h2>
+        <h2>Permissions came from a website? Check if the website is safe</h2>
         <form onSubmit={handleDomainCheck}>
           <input
             type="text"
