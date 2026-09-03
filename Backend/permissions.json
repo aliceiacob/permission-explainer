@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Camera",
+    "explanation": "Lets the app take photos and record video using your device's camera.",
+    "misuseExample": "A malicious app could secretly take photos or record video without you knowing.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Microphone",
+    "explanation": "Lets the app record audio using your device's microphone.",
+    "misuseExample": "A malicious app could listen in on conversations or record audio in the background.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Contacts",
+    "explanation": "Lets the app read, and sometimes modify, your contacts list.",
+    "misuseExample": "A malicious app could harvest your entire contacts list to sell or use for spam/phishing targeting people you know.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Location",
+    "explanation": "Lets the app access your device's GPS location, either precisely or approximately.",
+    "misuseExample": "A malicious app could track your movements over time, revealing where you live, work, or go regularly.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "SMS",
+    "explanation": "Lets the app read, send, or intercept text messages.",
+    "misuseExample": "A malicious app could intercept one-time passcodes sent via SMS, bypassing two-factor authentication on your other accounts.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Storage",
+    "explanation": "Lets the app read and write files on your device's storage (photos, downloads, documents).",
+    "misuseExample": "A malicious app could search your files for sensitive documents, screenshots, or saved images.",
+    "riskLevel": "medium"
+  },
+  {
+    "name": "Accessibility Service",
+    "explanation": "Designed to help users with disabilities interact with their device, but grants extremely broad access to see and control what's on your screen.",
+    "misuseExample": "A malicious app could read anything on screen, including banking app passwords, and even simulate taps on your behalf.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Device Admin",
+    "explanation": "Gives the app elevated control over device security settings.",
+    "misuseExample": "A malicious app could prevent itself from being uninstalled or lock you out of your own device.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Phone State",
+    "explanation": "Lets the app see your phone number, device ID, and call status.",
+    "misuseExample": "Used to uniquely track and fingerprint your device across apps, even if you reset other identifiers.",
+    "riskLevel": "medium"
+  },
+  {
+    "name": "Calendar",
+    "explanation": "Lets the app read or add events in your calendar.",
+    "misuseExample": "A malicious app could see your schedule, revealing when you're away from home.",
+    "riskLevel": "medium"
+  },
+  {
+    "name": "Body Sensors",
+    "explanation": "Lets the app access health-related sensors, such as heart rate monitors.",
+    "misuseExample": "Could be used to infer sensitive health information without your awareness.",
+    "riskLevel": "medium"
+  },
+  {
+    "name": "Call Logs",
+    "explanation": "Lets the app read or modify your call history.",
+    "misuseExample": "A malicious app could see who you've called, when, and for how long, building a picture of your relationships.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Bluetooth",
+    "explanation": "Lets the app discover and connect to nearby Bluetooth devices.",
+    "misuseExample": "Generally low risk, but can be used to track nearby devices for location inference.",
+    "riskLevel": "low"
+  },
+  {
+    "name": "Notifications",
+    "explanation": "Lets the app read the content of your notifications from other apps.",
+    "misuseExample": "A malicious app could read one-time codes or private messages that appear in notifications.",
+    "riskLevel": "high"
+  },
+  {
+    "name": "Internet",
+    "explanation": "Lets the app connect to the internet — required by almost all apps.",
+    "misuseExample": "Low risk alone, but necessary for any app to send stolen data elsewhere, so it matters more in combination with other permissions.",
+    "riskLevel": "low"
+  }
+]

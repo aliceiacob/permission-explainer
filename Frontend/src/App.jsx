@@ -1,122 +1,103 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Tesseract from 'tesseract.js';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [inputText, setInputText] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searched, setSearched] = useState(false);
+
+  const matchPermissions = async (text) => {
+    setLoading(true);
+    setError(null);
+    setSearched(true);
+
+    try {
+      const res = await fetch('http://localhost:3000/api/match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const data = await res.json();
+      setResults(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    matchPermissions(inputText);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setOcrLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await Tesseract.recognize(file, 'eng');
+      const extractedText = data.text;
+      setInputText(extractedText);
+      await matchPermissions(extractedText);
+    } catch (err) {
+      setError('Could not read text from that image.');
+    } finally {
+      setOcrLoading(false);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <div className="App">
+      <h1>Permission Explainer</h1>
+      <p>Paste permission text, or upload a screenshot, to see what an app's permissions actually mean.</p>
+
+      <form onSubmit={handleSubmit}>
+        <textarea
+          rows={5}
+          placeholder="e.g. This app requires access to your Camera, Contacts, and Location"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+        />
+        <br />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Checking...' : 'Explain these permissions'}
         </button>
-      </section>
+      </form>
 
-      <div className="ticks"></div>
+      <div style={{ marginTop: '1rem' }}>
+        <label>
+          Or upload a screenshot:{' '}
+          <input type="file" accept="image/*" onChange={handleImageUpload} />
+        </label>
+        {ocrLoading && <p>Reading text from image...</p>}
+      </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {error && <p>Error: {error}</p>}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {searched && !loading && !ocrLoading && results.length === 0 && !error && (
+        <p>No known permissions were found in that text.</p>
+      )}
+
+      <div className="permission-list">
+        {results.map((perm) => (
+          <div key={perm.name} className={`permission-card risk-${perm.riskLevel}`}>
+            <h2>{perm.name}</h2>
+            <span className="risk-badge">{perm.riskLevel.toUpperCase()} RISK</span>
+            <p>{perm.explanation}</p>
+            <p className="misuse"><strong>Could be misused to:</strong> {perm.misuseExample}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
